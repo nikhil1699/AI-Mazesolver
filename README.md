@@ -3,7 +3,8 @@ An AI which can solve any given maze. Creates a colourful maze and illuminated p
 
 
 
-Run::::::
+Run
+```
 python maze.py maze2.txt
-
+```
 replace maze2.txt with any other maze txt file
