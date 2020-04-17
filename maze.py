@@ -8,8 +8,13 @@ class Node():
 
 
 class StackFrontier():
+    """
+    Frontier is represented using a list
+    This class implements the whole idea of a frontier
+    
+    """
     def __init__(self):
-        self.frontier = []
+        self.frontier = [] 
 
     def add(self, node):
         self.frontier.append(node)
@@ -30,7 +35,12 @@ class StackFrontier():
 
 
 class QueueFrontier(StackFrontier):
-
+    """
+    Queue frontier inherits from the stack frontier
+    It does all the things that are done by stack frontier
+    except the way the remove elements is implemented
+    
+    """
     def remove(self):
         if self.empty():
             raise Exception("empty frontier")
@@ -117,14 +127,25 @@ class Maze():
 
 
     def solve(self):
-        """Finds a solution to maze, if one exists."""
+        """
+        Finds a solution to maze, if one exists.
+        This implements the BFS, DFS stuff. How to solve the maze
+
+        """
 
         # Keep track of number of states explored
         self.num_explored = 0
 
         # Initialize frontier to just the starting position
         start = Node(state=self.start, parent=None, action=None)
-        frontier = StackFrontier()
+        print("Enter which search you want BFS/DFS ?")
+        choice=input()
+        if(choice=="BFS"):
+            frontier=QueueFrontier()
+        if(choice=="DFS"):
+            frontier = StackFrontier()
+
+
         frontier.add(start)
 
         # Initialize an empty explored set
