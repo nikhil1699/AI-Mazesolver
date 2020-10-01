@@ -1,24 +1,26 @@
 import sys
 
-class Node():
+
+class Node:
     def __init__(self, state, parent, action):
         self.state = state
         self.parent = parent
         self.action = action
 
-class StackFrontier():
+
+class StackFrontier:
     def __init__(self):
         self.frontier = []
-    
+
     def add(self, node):
         self.frontier.append(node)
-    
+
     def contains_state(self, state):
         return any(node.state == state for node in self.frontier)
-    
+
     def empty(self):
         return len(self.frontier) == 0
-    
+
     def remove(self):
         if self.empty():
             raise Exception("Empty Frontier")
@@ -27,19 +29,23 @@ class StackFrontier():
             self.frontier = self.frontier[:-1]
             return node
 
+
 class QueueFrontier(StackFrontier):
     def remove(self):
         if self.empty():
-            raise Exception("Empty Fronteir")
+            raise Exception("Empty Frontier")
         else:
-            node=self.frontier[0]
+            node = self.frontier[0]
             self.frontier = self.frontier[1:]
             return node
 
-class Maze():
+
+class Maze:
 
     def __init__(self, filename):
 
+        self.explored = set()
+        self.num_explored = 0
         with open(filename) as f:
             contents = f.read()
 
@@ -54,16 +60,16 @@ class Maze():
 
         self.walls = []
         for i in range(self.height):
-            row=[]
+            row = []
             for j in range(self.width):
                 try:
-                    if contents[i][j]=="A":
-                        self.start = (i,j)
+                    if contents[i][j] == "A":
+                        self.start = (i, j)
                         row.append(False)
-                    elif contents[i][j]== "B":
-                        self.goal = (i,j)
+                    elif contents[i][j] == "B":
+                        self.goal = (i, j)
                         row.append(False)
-                    elif contents[i][j]==" ":
+                    elif contents[i][j] == " ":
                         row.append(False)
                     else:
                         row.append(True)
@@ -73,14 +79,13 @@ class Maze():
             self.walls.append(row)
         self.solution = None
 
-
     def print(self):
         solution = self.solution[1] if self.solution is not None else None
         print()
         for i, row in enumerate(self.walls):
             for j, col in enumerate(row):
                 if col:
-                    print("█", end="")
+                    print(" ", end="")
                 elif (i, j) == self.start:
                     print("A", end="")
                 elif (i, j) == self.goal:
@@ -91,7 +96,6 @@ class Maze():
                     print(" ", end="")
             print()
         print()
-
 
     def neighbors(self, state):
         row, col = state
@@ -107,15 +111,12 @@ class Maze():
             if 0 <= r < self.height and 0 <= c < self.width and not self.walls[r][c]:
                 result.append((action, (r, c)))
         return result
-    
 
     def solve(self):
-        self.num_explored = 0
-        start = Node(state=self.start, parent=None, action = None)
+        start = Node(state=self.start, parent=None, action=None)
         frontier = StackFrontier()
         frontier.add(start)
 
-        self.explored = set()
         while True:
             if frontier.empty():
                 raise Exception("No Solution")
@@ -123,13 +124,13 @@ class Maze():
             node = frontier.remove()
             self.num_explored += 1
 
-            if node.state ==  self.goal:
-                actions=[]
-                cells=[]
+            if node.state == self.goal:
+                actions = []
+                cells = []
                 while node.parent is not None:
                     actions.append(node.action)
                     cells.append(node.state)
-                    node=node.parent
+                    node = node.parent
                 actions.reverse()
                 cells.reverse()
                 self.solution = (actions, cells)
